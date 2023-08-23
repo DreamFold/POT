@@ -10,6 +10,7 @@ LP solvers for optimal transport using cvxopt
 import numpy as np
 import scipy as sp
 import scipy.sparse as sps
+import warnings
 
 try:
     import cvxopt
@@ -25,7 +26,11 @@ def scipy_sparse_to_spmatrix(A):
     return SP
 
 
-def barycenter(A, M, weights=None, verbose=False, log=False, solver='interior-point'):
+_DEFAULT_SOLVER_DEPRECATED = 'interior-point'
+_DEFAULT_SOLVER = 'highs'
+
+
+def barycenter(A, M, weights=None, verbose=False, log=False, solver=_DEFAULT_SOLVER_DEPRECATED):
     r"""Compute the Wasserstein barycenter of distributions A
 
      The function solves the following optimization problem [16]:
@@ -115,15 +120,23 @@ def barycenter(A, M, weights=None, verbose=False, log=False, solver='interior-po
     A_eq = sps.vstack((A_eq1, A_eq2))
     b_eq = np.concatenate((b_eq1, b_eq2))
 
-    if not cvxopt or solver in ['interior-point']:
+    if not cvxopt or solver == _DEFAULT_SOLVER_DEPRECATED:
         # cvxopt not installed or interior point
 
         if solver is None:
-            solver = 'interior-point'
+            solver = _DEFAULT_SOLVER_DEPRECATED
 
-        options = {'sparse': True, 'disp': verbose}
-        sol = sp.optimize.linprog(c, A_eq=A_eq, b_eq=b_eq, method=solver,
-                                  options=options)
+        options = dict(disp=verbose)
+        if solver == _DEFAULT_SOLVER_DEPRECATED:
+            warnings.warn(
+                f"`solver='{_DEFAULT_SOLVER_DEPRECATED}'` is deprecated and will be removed in future releases. "
+                f"Default solver will be set to '{_DEFAULT_SOLVER}'. Use `solver` parameter to specify solver needed.",
+                DeprecationWarning)
+            options.update(sparse=True)
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore",category=DeprecationWarning)
+            sol = sp.optimize.linprog(c, A_eq=A_eq, b_eq=b_eq, method=solver, options=options)
         x = sol.x
         b = x[-n:]
 
