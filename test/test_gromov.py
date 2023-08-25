@@ -142,8 +142,6 @@ def test_gromov_dtype_device(nx):
     C2 /= C2.max()
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         C1b, C2b, pb, qb, G0b = nx.from_numpy(C1, C2, p, q, G0, type_as=tp)
 
         Gb = ot.gromov.gromov_wasserstein(C1b, C2b, pb, qb, 'square_loss', G0=G0b, verbose=True)
@@ -451,7 +449,8 @@ def test_asymmetric_entropic_gromov(nx):
 
 @pytest.skip_backend("jax", reason="test very slow with jax backend")
 @pytest.skip_backend("tf", reason="test very slow with tf backend")
-def test_entropic_gromov_dtype_device(nx):
+@pytest.mark.parametrize('solver', ['PGD', 'PPA'])
+def test_entropic_gromov_dtype_device(nx, solver):
     # setup
     n_samples = 5  # nb samples
 
@@ -472,22 +471,19 @@ def test_entropic_gromov_dtype_device(nx):
     C2 /= C2.max()
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         C1b, C2b, pb, qb = nx.from_numpy(C1, C2, p, q, type_as=tp)
 
-        for solver in ['PGD', 'PPA']:
-            Gb = ot.gromov.entropic_gromov_wasserstein(
-                C1b, C2b, pb, qb, 'square_loss', epsilon=1e-1, max_iter=5,
-                solver=solver, verbose=True
-            )
-            gw_valb = ot.gromov.entropic_gromov_wasserstein2(
-                C1b, C2b, pb, qb, 'square_loss', epsilon=1e-1, max_iter=5,
-                solver=solver, verbose=True
-            )
+        Gb = ot.gromov.entropic_gromov_wasserstein(
+            C1b, C2b, pb, qb, 'square_loss', epsilon=1e-1, max_iter=5,
+            solver=solver, verbose=True
+        )
+        gw_valb = ot.gromov.entropic_gromov_wasserstein2(
+            C1b, C2b, pb, qb, 'square_loss', epsilon=1e-1, max_iter=5,
+            solver=solver, verbose=True
+        )
 
-            nx.assert_same_dtype_device(C1b, Gb)
-            nx.assert_same_dtype_device(C1b, gw_valb)
+        nx.assert_same_dtype_device(C1b, Gb)
+        nx.assert_same_dtype_device(C1b, gw_valb)
 
 
 @pytest.skip_backend("tf", reason="test very slow with tf backend")
@@ -666,7 +662,8 @@ def test_asymmetric_entropic_fgw(nx):
 
 @pytest.skip_backend("jax", reason="test very slow with jax backend")
 @pytest.skip_backend("tf", reason="test very slow with tf backend")
-def test_entropic_fgw_dtype_device(nx):
+@pytest.mark.parametrize('solver', ['PGD', 'PPA'])
+def test_entropic_fgw_dtype_device(nx, solver):
     # setup
     n_samples = 5  # nb samples
 
@@ -692,22 +689,19 @@ def test_entropic_fgw_dtype_device(nx):
 
     M = ot.dist(ys, yt)
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         Mb, C1b, C2b, pb, qb = nx.from_numpy(M, C1, C2, p, q, type_as=tp)
 
-        for solver in ['PGD', 'PPA']:
-            Gb = ot.gromov.entropic_fused_gromov_wasserstein(
-                Mb, C1b, C2b, pb, qb, 'square_loss', epsilon=0.1, max_iter=5,
-                solver=solver, verbose=True
-            )
-            fgw_valb = ot.gromov.entropic_fused_gromov_wasserstein2(
-                Mb, C1b, C2b, pb, qb, 'square_loss', epsilon=0.1, max_iter=5,
-                solver=solver, verbose=True
-            )
+        Gb = ot.gromov.entropic_fused_gromov_wasserstein(
+            Mb, C1b, C2b, pb, qb, 'square_loss', epsilon=0.1, max_iter=5,
+            solver=solver, verbose=True
+        )
+        fgw_valb = ot.gromov.entropic_fused_gromov_wasserstein2(
+            Mb, C1b, C2b, pb, qb, 'square_loss', epsilon=0.1, max_iter=5,
+            solver=solver, verbose=True
+        )
 
-            nx.assert_same_dtype_device(C1b, Gb)
-            nx.assert_same_dtype_device(C1b, fgw_valb)
+        nx.assert_same_dtype_device(C1b, Gb)
+        nx.assert_same_dtype_device(C1b, fgw_valb)
 
 
 def test_entropic_fgw_barycenter(nx):
@@ -2308,8 +2302,6 @@ def test_entropic_semirelaxed_gromov_dtype_device(nx):
     C2 /= C2.max()
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         C1b, C2b, pb = nx.from_numpy(C1, C2, p, type_as=tp)
 
         Gb = ot.gromov.entropic_semirelaxed_gromov_wasserstein(
@@ -2427,8 +2419,6 @@ def test_entropic_semirelaxed_fgw_dtype_device(nx):
 
     M = ot.dist(ys, yt)
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         Mb, C1b, C2b, pb = nx.from_numpy(M, C1, C2, p, type_as=tp)
 
         Gb = ot.gromov.entropic_semirelaxed_fused_gromov_wasserstein(

@@ -89,8 +89,6 @@ def test_emd_emd2_types_devices(nx):
     M = ot.dist(x, y)
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         ab, Mb = nx.from_numpy(a, M, type_as=tp)
 
         Gb = ot.emd(ab, ab, Mb)

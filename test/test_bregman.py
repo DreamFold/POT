@@ -305,8 +305,6 @@ def test_sinkhorn_variants_dtype_device(nx, method):
     M = ot.dist(x, x)
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         ub, Mb = nx.from_numpy(u, M, type_as=tp)
 
         Gb = ot.sinkhorn(ub, ub, Mb, 1, method=method, stopThr=1e-10)
@@ -325,8 +323,6 @@ def test_sinkhorn2_variants_dtype_device(nx, method):
     M = ot.dist(x, x)
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         ub, Mb = nx.from_numpy(u, M, type_as=tp)
 
         lossb = ot.sinkhorn2(ub, ub, Mb, 1, method=method, stopThr=1e-10)

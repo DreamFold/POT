@@ -94,8 +94,6 @@ def test_wasserstein_1d_type_devices(nx):
     rho_v /= rho_v.sum()
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb, rho_ub, rho_vb = nx.from_numpy(x, rho_u, rho_v, type_as=tp)
 
         res = wasserstein_1d(xb, xb, rho_ub, rho_vb, p=1)
@@ -180,8 +178,6 @@ def test_emd1d_type_devices(nx):
     rho_v /= rho_v.sum()
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb, rho_ub, rho_vb = nx.from_numpy(x, rho_u, rho_v, type_as=tp)
 
         emd = ot.emd_1d(xb, xb, rho_ub, rho_vb)
@@ -265,8 +261,6 @@ def test_wasserstein1d_circle_devices(nx):
     rho_v /= rho_v.sum()
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb, rho_ub, rho_vb = nx.from_numpy(x, rho_u, rho_v, type_as=tp)
 
         w1 = ot.wasserstein_circle(xb, xb, rho_ub, rho_vb, p=1)
@@ -311,8 +305,6 @@ def test_wasserstein1d_unif_circle_devices(nx):
     rho_u /= rho_u.sum()
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb, rho_ub = nx.from_numpy(x, rho_u, type_as=tp)
 
         w2 = ot.semidiscrete_wasserstein2_unif_circle(xb, rho_ub)

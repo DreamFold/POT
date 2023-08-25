@@ -154,8 +154,6 @@ def test_unif_backend(nx):
     n = 100
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         u = ot.unif(n, type_as=tp)
 
         np.testing.assert_allclose(1, np.sum(nx.to_numpy(u)), atol=1e-6)

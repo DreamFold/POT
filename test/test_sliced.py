@@ -163,8 +163,6 @@ def test_sliced_backend_type_devices(nx):
     P = P / np.sqrt((P**2).sum(0, keepdims=True))
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb, yb, Pb = nx.from_numpy(x, y, P, type_as=tp)
 
         valb = ot.sliced_wasserstein_distance(xb, yb, projections=Pb)
@@ -235,8 +233,6 @@ def test_max_sliced_backend_type_devices(nx):
     P = P / np.sqrt((P**2).sum(0, keepdims=True))
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb, yb, Pb = nx.from_numpy(x, y, P, type_as=tp)
 
         valb = ot.max_sliced_wasserstein_distance(xb, yb, projections=Pb)
@@ -422,8 +418,6 @@ def test_sliced_sphere_backend_type_devices(nx):
     P = log["projections"]
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb, yb = nx.from_numpy(x, y, type_as=tp)
 
         valb = ot.sliced_wasserstein_sphere(xb, yb, projections=nx.from_numpy(P, type_as=tp))
@@ -486,8 +480,6 @@ def test_sliced_sphere_unif_backend_type_devices(nx):
     x = x / np.sqrt(np.sum(x**2, -1, keepdims=True))
 
     for tp in nx.__type_list__:
-        print(nx.dtype_device(tp))
-
         xb = nx.from_numpy(x, type_as=tp)
 
         valb = ot.sliced_wasserstein_sphere_unif(xb)
