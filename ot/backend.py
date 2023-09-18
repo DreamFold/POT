@@ -1731,7 +1731,7 @@ class TorchBackend(Backend):
         self.__type_list__ = [torch.tensor(1, dtype=torch.float32),
                               torch.tensor(1, dtype=torch.float64)]
 
-        if torch.cuda.is_available():
+        if False and torch.cuda.is_available():
             self.rng_cuda_ = torch.Generator("cuda")
             self.rng_cuda_.seed()
             self.__type_list__.append(torch.tensor(1, dtype=torch.float32, device='cuda'))
